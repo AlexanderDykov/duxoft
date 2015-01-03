@@ -1,3 +1,6 @@
+.settings/
+.project
+config.json
 .cocos-project.json
 CMakeLists.txt
 frameworks/
