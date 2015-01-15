@@ -13,5 +13,6 @@
     "jsList" : [
         "src/resource.js",
         "src/GameLayer.js"
+		"src/MenuLayer.js"
     ]
 }
