@@ -10,7 +10,14 @@ var GameLayer = cc.Layer.extend({
 		/////////////////////////////
 		//my code
 		var Rabbit = new cc.Sprite(res.Rabbit);
+
+		this.scheduleUpdate();
+
 		return true;
+	},
+
+	update: function(dt){
+		cc.log("hello");
 	}
 });
 
