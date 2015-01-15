@@ -10,12 +10,6 @@ var GameLayer = cc.Layer.extend({
 		/////////////////////////////
 		//my code
 		var Rabbit = new cc.Sprite(res.Rabbit);
-		menu_play_btn.attr({
-			x : size.width / 2,
-			y : size.height / 2,
-			scale : 0.5
-		});
-		this.addChild(menu_play_btn,0);
 		return true;
 	}
 });

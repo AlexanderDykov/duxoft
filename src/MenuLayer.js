@@ -21,11 +21,10 @@ var MenuLayer = cc.Layer.extend({
         var eventListener = cc.EventListener.create({
             event: cc.EventListener.MOUSE,
 
-            onMouseDown: function(event){
-                cc.log("Hello");
-                var target = event.getCurrentTarget();
-
-                target.setOpacity(56);
+            onMouseDown: function(event) {
+                cc.log("menu_play_btn_click");
+                //load GameLayer
+                cc.director.pushScene(cc.TransitionSlideInT.create(1, GameLayer.scene()));
             }
         });
 
