@@ -1,5 +1,4 @@
 var GameLayer = cc.Layer.extend({
-	sprite:null,
 	ctor:function () {
 		//////////////////////////////
 		// 1. super init first
@@ -32,12 +31,15 @@ var GameLayer = cc.Layer.extend({
 		
 		var eventListener = cc.EventListener.create({
 			event: cc.EventListener.MOUSE,
-
-			onMouseDown: function(event){
-				cc.log("Jump");
-				var jumpAction = cc.JumpBy.create(time, cc.p(0,0),100,1);
-				Rabbit.runAction(jumpAction);
+			onMouseDown: function(event)
+			{
+				if(GameLayer.jumpFlag)
+				{
+					GameLayer.jumpFlag = false;
+					GameLayer.jumpAction = cc.JumpBy.create(time, cc.p(0,0),100,1);
+					Rabbit.runAction(GameLayer.jumpAction);
 				}
+			}
 			
 		});
 		this.scheduleUpdate();
@@ -49,7 +51,10 @@ var GameLayer = cc.Layer.extend({
 	},
 
 	update: function(dt){
-		cc.log("hello");
+		if(GameLayer.jumpAction != null)
+			if(GameLayer.jumpAction.isDone())
+				GameLayer.jumpFlag = true;
+	
 	}
 });
 
@@ -61,3 +66,6 @@ GameLayer.scene = function () {
 	scene.addChild(layer, 1);
 	return scene;
 };
+
+GameLayer.jumpFlag = true;
+GameLayer.jumpAction = new cc.Action();
