@@ -6,4 +6,8 @@ CMakeLists.txt
 frameworks/
 runtime/
 tools/
+*~
+CocosStudioProject/
+.idea/
+
 
