@@ -40,11 +40,16 @@ var GameLayer = cc.Layer.extend({
 				}
 			
 		});
+		this.scheduleUpdate();
 
 		cc.eventManager.addListener(eventListener, this);
 
 		
 		return true;
+	},
+
+	update: function(dt){
+		cc.log("hello");
 	}
 });
 
@@ -53,6 +58,6 @@ var GameLayer = cc.Layer.extend({
 GameLayer.scene = function () {
 	var scene = new cc.Scene();
 	var layer = new GameLayer();
-	scene.addChild(layer);
+	scene.addChild(layer, 1);
 	return scene;
 };
