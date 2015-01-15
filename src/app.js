@@ -1,5 +1,4 @@
-
-var GameLayer = cc.Layer.extend({
+/*var GameLayer = cc.Layer.extend({
     sprite:null,
     ctor:function () {
         //////////////////////////////
@@ -19,13 +18,15 @@ var GameLayer = cc.Layer.extend({
 	this.addChild(menu_play_btn,0);
         return true;
     }
-});
+});*/
 
-var Scene = cc.Scene.extend({
+
+
+/*var Scene = cc.Scene.extend({
     onEnter:function () {
         this._super();
         var layer = new GameLayer();
         this.addChild(layer);
     }
-});
+});*/
 
