@@ -1,82 +1,71 @@
 var GameLayer = cc.Layer.extend({
-	
-	onStart:function(count){
-		var size = cc.winSize;
-		for(var i=0; i<count; i++)			
-		{
-			var sizeX = size.width/count;
-			cc.log(i.toString());
-			GameLayer.Rabbits[i] = new cc.Sprite(res.Rabbit);
-			GameLayer.Rabbits[i].attr({
-				x : sizeX*(i) +150,
-				y : size.height / 2,
-				scale : 0.20
-			});
-			this.addChild(GameLayer.Rabbits[i],0);
-		}
-		
-	},
-	
-	ctor:function () {
-		//////////////////////////////
-		// 1. super init first
+    ctor:function() {
 		this._super();
-
-		var size = cc.winSize;
-		this.onStart(3);
-		/////////////////////////////
-		//my code
-		var Monster = new cc.Sprite(res.Enemy);
-		Monster.attr({
-			x : 10,
-			y : size.height / 2,
-			scale : 0.5
-		});
-		this.addChild(Monster,0);
-		
-		var moveAction = cc.MoveTo.create(4, cc.p(size.width, size.height/2-10));
-		Monster.runAction(moveAction);
-		
-		var time = 1;
-		
-		
-		var eventListener = cc.EventListener.create({
-			event: cc.EventListener.MOUSE,
-			onMouseDown: function(event)
-			{
-				GameLayer.jumpAction = cc.JumpBy.create(time, cc.p(0,0),100,1);
-				GameLayer.Rabbits[GameLayer.currentRabbit].runAction(GameLayer.jumpAction);
-				GameLayer.currentRabbit++;
-				if(GameLayer.currentRabbit >= GameLayer.Rabbits.length ){					
-					GameLayer.currentRabbit = 0;
-				}				
-			}
-			
-		});
-		this.scheduleUpdate();
-
-		cc.eventManager.addListener(eventListener, this);
-
-		
-		return true;
+        this.init();
 	},
+    init : function() {
+        var size = cc.director.getWinSize();
+        var tenthOfWidth = size.width / 10;
+        var tenthOfHeight = size.height / 10;
+        //background
+        var background = cc.LayerGradient.create(cc.color(0,0,0,255),
+            cc.color(0x46,0x82,0xB4,255));
+        //game interface
+        //user interface
+        var back_btn = new cc.MenuItemFont("Back", this.backToMenu, this);
+        back_btn.setFontSize(12);
+        back_btn.setPosition(new cc.Point(0,0));
+        var menu = new cc.Menu(back_btn);
+        menu.setPosition(tenthOfWidth, tenthOfHeight*9);
+        //hi.runAction(cc.moveTo(1,myLevel(size)[0]));
+        /*var eventListener = cc.EventListener.create({
+         event: cc.EventListener.MOUSE,
+         onMouseDown: function(event)
+         {
+         cc.log(currRab.isJumpDone);
+         if( currRab.isJumpDone === true ) {
+         var jumpAction = jumpToDir(0.7, currRab.direction, 50, currRab);
+         currRab.runAction(jumpAction);
+         hi.runAction(hi.eatAnimation);
+         }
+         if( currRab === rab0 ){
+         currRab = rab1;
+         } else {
+         if( currRab === rab1 ){
+         currRab = rab2;
+         } else if( currRab === rab2 ){
+         currRab = rab3;
+         } else{
+         currRab = rab0;
+         }
+         }
+         }
 
-	update: function(dt){
-		//check collisions
-		for(var i = 0; i < GameLayer.Rabbits.length; i++){
-		//	if( GameLayer.Rabbits[i] )
-		}
-	}
+         });*/
+        //cc.eventManager.addListener(eventListener, this);
+        //add items to layer
+        this.addChild(background,0);
+        this.addChild(menu,2);
+        this.scheduleUpdate();
+        //draw.drawQuadBezier(cc.p(160,10), cc.p(310,0), cc.p(310,160),50,3);
+        //draw.drawQuadBezier(cc.p(310,160), cc.p(310,310), cc.p(160,310),50,3);
+        //draw.drawQuadBezier(cc.p(160,310), cc.p(10,310), cc.p(10,160),50,3);
+        //draw.drawQuadBezier(cc.p(10,160), cc.p(10,10), cc.p(160,10),50,3);
+        return true;
+    },
+	update: function(dt) {
+		//check collision
+	},
+    backToMenu: function() {
+        //TODO : finish game scene
+        //cc.director.pushScene(new cc.TransitionFade(1.2,scene));
+        cc.director.popScene();
+    }
 });
 
-
-
-GameLayer.scene = function () {
-	var scene = new cc.Scene();
+GameLayer.scene = function() {
+    var scene = new cc.Scene();
 	var layer = new GameLayer();
-	scene.addChild(layer, 1);
+	scene.addChild(layer);
 	return scene;
 };
-GameLayer.Rabbits = new Array();
-GameLayer.currentRabbit = 0;
-GameLayer.jumpAction = new cc.Action();

@@ -12,7 +12,13 @@
 
     "jsList" : [
         "src/resource.js",
+        "src/utilities.js",
+        "src/actions.js",
+        "src/animations.js",
+        "src/levels.js",
         "src/GameLayer.js",
-		"src/MenuLayer.js"
+		"src/MenuLayer.js",
+        "src/Rabbit.js",
+        "src/Monster.js"
     ]
 }
