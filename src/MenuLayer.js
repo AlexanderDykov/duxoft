@@ -1,59 +1,132 @@
-
 var MenuLayer = cc.Layer.extend({
-    ctor: function () {
+    levelNumber_lbl_tmp: null,
+    musicValue: null,
+    soundValue: null,
+    ctor: function() {
         this._super();
         this.init();
     },
     init: function() {
+        this._super();
+        //create sprite sheet
+        cc.spriteFrameCache.addSpriteFrames(res.TextSprites_plist);
+        this.spriteSheet = new cc.SpriteBatchNode(res.TextSprites_png);
+        this.addChild(this.spriteSheet);
+        //background
+        var background = cc.LayerGradient.create(cc.color(0x00, 0x00, 0x00, 255),
+            cc.color(0xCF, 0x4A, 0xFF, 255));
+        //add items to layer
+        this.addChild(background);
+        //set layout of screen
         var size = cc.director.getWinSize();
-        var tenthOfWidth = size.width / 10;
-        var tenthOfHeight = size.height / 10;
+        GameSettings.init(size);
+        Level.init(size);
+        var tenthOfWidth = GameSettings.tenthOfWidth();
+        var tenthOfHeight = GameSettings.tenthOfHeight();
         //create menu items
-        var level_lbl = new cc.LabelTTF("Level", "Helvetica", 28, 32, cc.size(320,32), cc.TEXT_ALIGNMENT_CENTER);
-        level_lbl.setPosition( new cc.Point(5*tenthOfWidth, 9*tenthOfHeight) );
+        var level_lbl = new cc.Sprite("#level.png");
+        level_lbl.setPosition(cc.p(5 * tenthOfWidth, 9 * tenthOfHeight));
 
-        var levelNumber_lbl_tmp = new cc.LabelTTF("42", "Helvetica", 24, 32, cc.size(320,32), cc.TEXT_ALIGNMENT_CENTER);
-        levelNumber_lbl_tmp.setPosition( new cc.Point(5*tenthOfWidth, 8*tenthOfHeight) );
+        this.levelNumber_lbl_tmp = new LevelNumber(this,cc.p(5 * tenthOfWidth, 8 * tenthOfHeight));
+        this.levelNumber_lbl_tmp.setNumber(Level.getCurrentLevel());
 
-        var levelNext_btn = new cc.MenuItemFont(">", this.setNextLevel, this);
-        levelNext_btn.setPosition(new cc.Point(tenthOfWidth*3,tenthOfHeight*3));
+        var levelNext_btn = new cc.MenuItemImage(
+            "#right_unpressed.png",
+            "#right_pressed.png",
+            "#right_neutral.png",
+            this.setNextLevel,
+            this
+        );
+        levelNext_btn.setPosition(cc.p(tenthOfWidth * 3, tenthOfHeight * 3));
 
-        var levelPrev_btn = new cc.MenuItemFont("<", this.setPrevLevel, this);
-        levelPrev_btn.setPosition(new cc.Point(-tenthOfWidth*3,tenthOfHeight*3));
+        var levelPrev_btn = new cc.MenuItemImage(
+            "#left_unpressed.png",
+            "#left_pressed.png",
+            "#left_neutral.png",
+            this.setPrevLevel,
+            this
+        );
+        levelPrev_btn.setPosition(cc.p(-tenthOfWidth * 3, tenthOfHeight * 3));
 
-        var play_btn = new cc.MenuItemFont("Play", this.play, this);
-        play_btn.setPosition(new cc.Point(0,tenthOfHeight*2));
+        var play_btn = new cc.MenuItemImage(
+            "#play_unpressed.png",
+            "#play_pressed.png",
+            "#play_neutral.png",
+            this.play,
+            this
+        );
+        play_btn.setPosition(cc.p(0, tenthOfHeight * 2));
 
-        var musicSwitch_btn = new cc.MenuItemFont("Music", this.switchMusic, this);
-        musicSwitch_btn.setPosition(new cc.Point(-tenthOfWidth,-tenthOfHeight*3));
+        var musicSwitch_btn = new cc.MenuItemImage(
+            "#music.png",
+            "#music.png",
+            "#music.png",
+            this.switchMusic,
+            this
+        );
+        musicSwitch_btn.setPosition(cc.p(-tenthOfWidth, -tenthOfHeight * 3));
 
-        var soundSwitch_btn = new cc.MenuItemFont("Sound", this.switchSound, this);
-        soundSwitch_btn.setPosition(new cc.Point(-tenthOfWidth,-tenthOfHeight*4));
+        this.musicValue = new cc.Sprite("#on.png");
+        this.musicValue.setPosition(cc.p(tenthOfWidth * 6, tenthOfHeight * 2));
+
+        var soundSwitch_btn = new cc.MenuItemImage(
+            "#sound.png",
+            "#sound.png",
+            "#sound.png",
+            this.switchSound,
+            this
+        );
+        soundSwitch_btn.setPosition(cc.p(-tenthOfWidth, -tenthOfHeight * 4));
+
+        this.soundValue = new cc.Sprite("#on.png");
+        this.soundValue.setPosition(cc.p(tenthOfWidth * 6, tenthOfHeight * 1));
         //create menu
         var menu = new cc.Menu(levelNext_btn, levelPrev_btn,
             play_btn, musicSwitch_btn, soundSwitch_btn);
-        menu.setPosition(size.width/2,size.height/2);
+        menu.setPosition(size.width / 2, size.height / 2);
         //add items to layer
         this.addChild(level_lbl);
-        this.addChild(levelNumber_lbl_tmp);
+        this.addChild(this.musicValue);
+        this.addChild(this.soundValue);
         this.addChild(menu);
         cc.log("menu was added");
-        return true;
     },
-    play : function() {
-        var scene = GameLayer.scene();
-        cc.director.pushScene(new cc.TransitionFade(1.2,scene));
+    play: function() {
+        var scene = new PlayScene();
+        cc.director.pushScene(new cc.TransitionFade(1.2, scene));
     },
-    switchMusic : function() {
+    switchMusic: function() {
+        var pos = cc.p(GameSettings.tenthOfWidth() * 6,
+            GameSettings.tenthOfHeight() * 2);
+        GameSettings.switchMusic();
+        if (GameSettings.isMusicOn()) {
+            this.musicValue = Helper.replaceSprite(this,this.musicValue,"#on.png",pos);
+        } else {
+            this.musicValue = Helper.replaceSprite(this,this.musicValue,"#off.png",pos);
+        }
         cc.log("music");
     },
-    switchSound : function() {
+    switchSound: function() {
+        var pos = cc.p(GameSettings.tenthOfWidth() * 6,
+            GameSettings.tenthOfHeight() * 1);
+        GameSettings.switchSound();
+        if (GameSettings.isSoundOn()) {
+            this.soundValue = Helper.replaceSprite(this, this.soundValue, "#on.png", pos);
+        } else {
+            this.soundValue = Helper.replaceSprite(this, this.soundValue, "#off.png", pos);
+
+        }
         cc.log("sound");
     },
-    setNextLevel : function() {
+    setNextLevel: function() {
+        Level.nextLevel();
+        this.levelNumber_lbl_tmp.setNumber(Level.getCurrentLevel());
         cc.log("next level");
     },
-    setPrevLevel : function() {
+    setPrevLevel: function() {
+        Level.prevLevel();
+
+        this.levelNumber_lbl_tmp.setNumber(Level.getCurrentLevel());
         cc.log("prev level");
     }
 
@@ -64,6 +137,5 @@ MenuLayer.scene = function() {
     var scene = new cc.Scene();
     var layer = new MenuLayer();
     scene.addChild(layer);
-    return scene;
+    return new cc.TransitionSlideInT(1.2, scene);
 };
-

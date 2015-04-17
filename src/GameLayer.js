@@ -1,22 +1,49 @@
 var GameLayer = cc.Layer.extend({
-    ctor:function() {
-		this._super();
+    spriteSheet: null,
+    ctor: function() {
+        this._super();
         this.init();
-	},
-    init : function() {
+        GameLayer.some = this;
+    },
+    init: function() {
+        this._super();
+        //create sprite sheet
+        cc.spriteFrameCache.addSpriteFrames(res.GameSprites_plist);
+        this.spriteSheet = new cc.SpriteBatchNode(res.GameSprites_png);
+        this.addChild(this.spriteSheet);
+
         var size = cc.director.getWinSize();
         var tenthOfWidth = size.width / 10;
         var tenthOfHeight = size.height / 10;
-        //background
-        var background = cc.LayerGradient.create(cc.color(0,0,0,255),
-            cc.color(0x46,0x82,0xB4,255));
         //game interface
-        //user interface
-        var back_btn = new cc.MenuItemFont("Back", this.backToMenu, this);
-        back_btn.setFontSize(12);
-        back_btn.setPosition(new cc.Point(0,0));
-        var menu = new cc.Menu(back_btn);
-        menu.setPosition(tenthOfWidth, tenthOfHeight*9);
+            //init actions
+        Monster.initActions();
+        Rabbit.initActions();
+            //create objects
+        var monster = new Monster();
+        var rabbitSome = new Rabbit(true);
+        rabbitSome.setPosition(cc.p(size.width/2,size.height/2));
+
+
+        var drawer = new cc.DrawNode();
+        Level.load(monster, drawer);
+
+        var eventListener = cc.EventListener.create({
+            event: cc.EventListener.MOUSE,
+            onMouseDown: function(event) {
+                if (event.getButton() === cc.EventMouse.BUTTON_LEFT) {
+                    monster.move();
+                }
+                if (event.getButton() === cc.EventMouse.BUTTON_RIGHT) {
+                    monster.eat();
+                    rabbitSome.runAction(cc.sequence(Rabbit.turnleftAction,
+                        Rabbit.turnleftAction,Rabbit.turnrightAction,Rabbit.turnrightAction));
+                    
+                }
+            }
+        });
+
+        //TODO: TEMP
         //hi.runAction(cc.moveTo(1,myLevel(size)[0]));
         /*var eventListener = cc.EventListener.create({
          event: cc.EventListener.MOUSE,
@@ -43,29 +70,24 @@ var GameLayer = cc.Layer.extend({
 
          });*/
         //cc.eventManager.addListener(eventListener, this);
-        //add items to layer
-        this.addChild(background,0);
-        this.addChild(menu,2);
-        this.scheduleUpdate();
         //draw.drawQuadBezier(cc.p(160,10), cc.p(310,0), cc.p(310,160),50,3);
         //draw.drawQuadBezier(cc.p(310,160), cc.p(310,310), cc.p(160,310),50,3);
         //draw.drawQuadBezier(cc.p(160,310), cc.p(10,310), cc.p(10,160),50,3);
         //draw.drawQuadBezier(cc.p(10,160), cc.p(10,10), cc.p(160,10),50,3);
-        return true;
+
+        //add listeners
+        cc.eventManager.addListener(eventListener, this);
+        //add items to layer
+        this.addChild(monster, 2);
+        this.addChild(drawer, 2);
+        this.addChild(rabbitSome,2);
+        this.scheduleUpdate();
     },
-	update: function(dt) {
-		//check collision
-	},
-    backToMenu: function() {
-        //TODO : finish game scene
-        //cc.director.pushScene(new cc.TransitionFade(1.2,scene));
-        cc.director.popScene();
+    update: function(dt) {
+        //check collision
     }
 });
 
-GameLayer.scene = function() {
-    var scene = new cc.Scene();
-	var layer = new GameLayer();
-	scene.addChild(layer);
-	return scene;
-};
+GameLayer.gameObjects = [];
+
+GameLayer.some;

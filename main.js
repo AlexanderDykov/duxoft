@@ -47,12 +47,12 @@
  *
  */
 
-cc.game.onStart = function(){
+cc.game.onStart = function() {
     cc.view.adjustViewPort(true);
-    cc.view.setDesignResolutionSize(380, 420, cc.ResolutionPolicy.SHOW_ALL);
+    cc.view.setDesignResolutionSize(768/*320*/, 1024/*480*/, cc.ResolutionPolicy.SHOW_ALL);
     cc.view.resizeWithBrowserSize(true);
     //load resources
-    cc.LoaderScene.preload(g_resources, function () {
+    cc.LoaderScene.preload(g_resources, function() {
         cc.director.runScene(MenuLayer.scene());
     }, this);
 };
