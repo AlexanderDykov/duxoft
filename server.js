@@ -1,8 +1,7 @@
 var express = require('express'),
     server = express();
 
-server.use('/frameworks', express.static(__dirname + '/frameworks') );
-server.use('/tools', express.static(__dirname + '/tools') );
+server.use('/frameworks/cocos2d-html5', express.static(__dirname + '/frameworks/cocos2d-html5') );
 server.use('/src', express.static(__dirname + '/src') );
 server.use('/res', express.static(__dirname + '/res') );
 server.use('/main.js', express.static(__dirname + '/main.js') );
