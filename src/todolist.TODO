@@ -1,0 +1,4 @@
+ ✔ Create action in 'load' and add it to Monster @done (15-04-09 17:02)
+ ✔ Fix 'drawCurvePath' for cases with even number of points @done (15-04-16 18:26)
+ ☐ Create static actions for game object
+ ☐ Fix 'package.json'

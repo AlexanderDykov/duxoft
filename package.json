@@ -1,0 +1,11 @@
+{
+    "name": "Duxoft: Rabbit",
+    "version": "0.0.1",
+    "dependencies": {
+        "express": "3.x"
+    },
+    "engines": {
+        "node": "0.12.x",
+        "npm":  "2.7.x"
+    }
+}
