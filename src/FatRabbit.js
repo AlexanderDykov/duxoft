@@ -19,7 +19,13 @@ var FatRabbit = cc.Sprite.extend({
 		this.runAction(FatRabbit.eatCarrotAction);
 	},
 	activity: function() {
-		// v      this.eatCarrot();
+		//this.eatCarrot();
+	},
+	setPositionFromTwoPoints: function(firstPoint, secondPoint, offset) {
+		var liam = ( offset / 100 )
+		var x = (firstPoint.x + liam * secondPoint.x) / ( 1 + liam );
+		var y = (firstPoint.y + liam * secondPoint.y) / ( 1 + liam );
+		this.setPosition(x, y);
 	},
 	getCollideRect: function() {
 		var w = this.width * GameSettings.getScaleFactor();
