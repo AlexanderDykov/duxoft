@@ -27,6 +27,12 @@ var Rabbit = cc.Sprite.extend({
 	},*/
 	activity: function(){
 		this.turnLeft();
+	},
+	setPositionFromTwoPoints: function(firstPoint, secondPoint, offset) {
+		var liam = (offset / (101 - offset) );
+		var x = (firstPoint.x + liam * secondPoint.x) / ( 1 + liam );
+		var y = (firstPoint.y + liam * secondPoint.y) / ( 1 + liam );
+		this.setPosition(x, y);
 	}
 });
 

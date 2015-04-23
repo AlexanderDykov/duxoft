@@ -18,14 +18,22 @@ var Level = function() {
         return character !== ' ' && character !== '\n' && character !== '\r' && character !== '\t' && character !== '\0' && typeof character !== 'undefined';
     };
 
+
     var getPath = function(data) {
         var path = [];
         var len = data.points.length;
         for (var i = 0; i < data.points.length; i++) {
-            path.push(cc.p(data.points[i].x * unitX, data.points[i].y * unitY));
+            path.push(cc.p(data.points[i].x, data.points[i].y));
         }
         return path;
     };
+
+    var pointUpdate = function(data) {
+        for (var i = 0; i < data.points.length; i++) {
+            data.points[i].x *= unitX;
+            data.points[i].y *= unitY;
+        }
+    }
 
     var drawLinearPath = function(path) {
         var len = path.length;
@@ -40,18 +48,30 @@ var Level = function() {
         drawer_.drawCardinalSpline(path, 0.6, 100, 5, new cc.Color(255, 255, 255, 255));
     };
 
-    var genGameObjects = function(path) {
-        var len = path.length;
-        for (var i = 0; i < len - NUM_BY_POINT; i += NUM_BY_POINT) {
-            var from = cc.p(path[i], path[i + 1]);
-            var to = cc.p(path[i + 2], path[i + 3]);
-            var direction = cc.pNormalize(cc.pSub(to, from));
-            var normal = cc.p(-direction.y, direction.x);
-            var dist = cc.pDistance(from, to);
 
     var genGameObjects = function(data) {
-
-    }
+        for (var i = 0; i < data.map.length; i++) {
+            var object =  data.map[i];
+            var unit;
+            cc.log(data.map.length);
+            switch (object.type) {
+                case "rabbit":
+                    unit = new Rabbit();
+                    break
+                case "fat rabbit":
+                    unit = new FatRabbit();
+                    break
+                case "bomb":
+                    unit = new Bomb();
+                    break
+            }
+            var firstPoint = data.points[object.section - 1];
+            var sectionPoint = data.points[object.section];
+            cc.log(firstPoint, sectionPoint, object.offset);
+            unit.setPositionFromTwoPoints(firstPoint, sectionPoint, object.offset);
+            PlayScene.gameLayer.addChild(unit,2);
+        }
+    };
 
     var setMonsterMoveAction = function(path) {
         cc.log(path);
@@ -116,9 +136,9 @@ var Level = function() {
                 if (error) {
                     return cc.log("Level loading '" + name + "' failed");
                 }
+                pointUpdate(data);
                 var path = getPath(data); 
                 drawCurvePath(path);
-                setMonsterMoveAction(path);
                 genGameObjects(data);
             });
         },
