@@ -24,6 +24,8 @@
         "src/StatusLayer.js",
         "src/BackgroundLayer.js",
         "src/Rabbit.js",
-        "src/Monster.js"
+        "src/FatRabbit.js",
+        "src/Monster.js",
+        "src/Bomb.js"
     ]
 }

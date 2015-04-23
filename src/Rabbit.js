@@ -2,17 +2,13 @@
  * Created by andron94 on 13.03.15.
  */
 var Rabbit = cc.Sprite.extend({
-	isFat: false,
 	jumpAction: null,
 	ctor: function(isFatRabbit) {
 		this._super("#rabbit.png");
 		//scale relative to aspect ratio
-		var size = cc.director.getWinSize();
 		this.scale = GameSettings.getScaleFactor();
 		//anchor point
 		this.setAnchorPoint(cc.p(0.5, 0));
-		
-		this.isFat = isFatRabbit;
 	},
 	onEnter: function() {
 		this._super();
@@ -26,20 +22,23 @@ var Rabbit = cc.Sprite.extend({
 	turnRight: function() {
 		this.runAction(Rabbit.turnrightAction);
 	},
-	eatCarrot: function() {
-
+	/*eatCarrot: function() {
+		this.runAction(Rabbit.eatCarrotAction);
+	},*/
+	activity: function(){
+		this.turnLeft();
 	}
 });
 
 Rabbit.initActions = function() {
 	//eat carrot
-	var EATCARROT_FRAME_COUNT = 2;
+	/*var EATCARROT_FRAME_COUNT = 2;
 	Rabbit.eatCarrotAction = Helper.createAnimation(
 		"rabbit_eat",
-		TURNLEFT_FRAME_COUNT,
-		0.1,
+		EATCARROT_FRAME_COUNT,
+		0.5,
 		"rabbit.png"
-	);
+	);*/
 	//turn left
 	var TURNLEFT_FRAME_COUNT = 3;
 	Rabbit.turnleftAction = Helper.createDualAnimation(

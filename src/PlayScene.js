@@ -7,7 +7,8 @@ var PlayScene = cc.Scene.extend({
 		this._super();
 
 		this.addChild(new BackgroundLayer());
-		this.addChild(new GameLayer());
+		PlayScene.gameLayer = new GameLayer();
+		this.addChild(PlayScene.gameLayer);
 		this.addChild(new StatusLayer());
 	}
 });

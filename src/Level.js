@@ -61,6 +61,7 @@ var Level = function() {
             points.push(cc.p(path[i], path[i + 1]));
         }
         drawer_.drawCardinalSpline(points, 0.6, 100, 1, new cc.Color(0, 255, 255, 255));
+        cc.log( points);
     };
 
     var genGameObjects = function(path) {

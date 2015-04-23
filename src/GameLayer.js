@@ -13,17 +13,23 @@ var GameLayer = cc.Layer.extend({
         this.addChild(this.spriteSheet);
 
         var size = cc.director.getWinSize();
-        var tenthOfWidth = size.width / 10;
-        var tenthOfHeight = size.height / 10;
+        var tenthOfWidth = GameSettings.tenthOfWidth();
+        var tenthOfHeight = GameSettings.tenthOfHeight();
         //game interface
             //init actions
         Monster.initActions();
         Rabbit.initActions();
+        Bomb.initActions();
+        FatRabbit.initActions();
             //create objects
         var monster = new Monster();
-        var rabbitSome = new Rabbit(true);
+        var rabbitSome = new Rabbit();
+        var fatrabbitSome = new FatRabbit();
+        var bombSome = new Bomb();
         rabbitSome.setPosition(cc.p(size.width/2,size.height/2));
-
+        bombSome.setPosition(cc.p(size.width/2+tenthOfWidth,size.height/2));
+        fatrabbitSome.setPosition(cc.p(size.width/2+2*tenthOfWidth,size.height/2));
+        var someArr = [rabbitSome,bombSome];
 
         var drawer = new cc.DrawNode();
         Level.load(monster, drawer);
@@ -36,9 +42,12 @@ var GameLayer = cc.Layer.extend({
                 }
                 if (event.getButton() === cc.EventMouse.BUTTON_RIGHT) {
                     monster.eat();
-                    rabbitSome.runAction(cc.sequence(Rabbit.turnleftAction,
-                        Rabbit.turnleftAction,Rabbit.turnrightAction,Rabbit.turnrightAction));
-                    
+                    //rabbitSome.runAction(cc.sequence(Rabbit.turnleftAction,
+                    //    Rabbit.turnleftAction,Rabbit.turnrightAction,Rabbit.turnrightAction));
+                    //bombSome.boom();
+                    for (var i = someArr.length - 1; i >= 0; i--) {
+                        someArr[i].activity();
+                    };
                 }
             }
         });
@@ -81,10 +90,15 @@ var GameLayer = cc.Layer.extend({
         this.addChild(monster, 2);
         this.addChild(drawer, 2);
         this.addChild(rabbitSome,2);
+        this.addChild(bombSome,2);
+        this.addChild(fatrabbitSome,2);
         this.scheduleUpdate();
     },
     update: function(dt) {
         //check collision
+    },
+    removeGameObject: function( object ) {
+        this.removeChild(object);
     }
 });
 
