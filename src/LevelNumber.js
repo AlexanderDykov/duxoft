@@ -3,7 +3,7 @@ var LevelNumber = function(parent, pos) {
 	this.firstDigit = null;
 	this.secondDigit = null;
 	this.firstPos = pos;
-	this.secondPos = cc.p(pos.x + GameSettings.tenthOfWidth()/4, pos.y);
+	this.secondPos = cc.p(pos.x + GameSettings.tenthOfWidth()/2, pos.y);
 	this.parent = parent;
 	//METHODS
 	this.setNumber = function(number) {
@@ -24,4 +24,9 @@ var LevelNumber = function(parent, pos) {
 			this.secondPos
 		);
 	};
+
+	this.setScale = function( scale ){
+		this.firstDigit.setScale(scale);
+		this.secondDigit.setScale(scale);
+	}
 }

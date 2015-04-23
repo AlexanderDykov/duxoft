@@ -13,8 +13,10 @@ var MenuLayer = cc.Layer.extend({
         this.spriteSheet = new cc.SpriteBatchNode(res.TextSprites_png);
         this.addChild(this.spriteSheet);
         //background
-        var background = cc.LayerGradient.create(cc.color(0x00, 0x00, 0x00, 255),
-            cc.color(0xCF, 0x4A, 0xFF, 255));
+        //var background = cc.LayerGradient.create(cc.color(0x00, 0x00, 0x00, 255),
+        //    cc.color(0xCF, 0x4A, 0xFF, 255));
+        var background = cc.LayerGradient.create(cc.color(0xEE, 0xEE, 0xEE, 255),
+            cc.color(0xEE, 0xEE, 0xEE, 255));
         //add items to layer
         this.addChild(background);
         //set layout of screen
@@ -26,9 +28,11 @@ var MenuLayer = cc.Layer.extend({
         //create menu items
         var level_lbl = new cc.Sprite("#level.png");
         level_lbl.setPosition(cc.p(5 * tenthOfWidth, 9 * tenthOfHeight));
+        level_lbl.setScale(GameSettings.getScaleFactor());
 
-        this.levelNumber_lbl_tmp = new LevelNumber(this,cc.p(5 * tenthOfWidth, 8 * tenthOfHeight));
+        this.levelNumber_lbl_tmp = new LevelNumber(this, cc.p(5 * tenthOfWidth, 8 * tenthOfHeight));
         this.levelNumber_lbl_tmp.setNumber(Level.getCurrentLevel());
+        this.levelNumber_lbl_tmp.setScale(GameSettings.getScaleFactor());
 
         var levelNext_btn = new cc.MenuItemImage(
             "#right_unpressed.png",
@@ -38,6 +42,7 @@ var MenuLayer = cc.Layer.extend({
             this
         );
         levelNext_btn.setPosition(cc.p(tenthOfWidth * 3, tenthOfHeight * 3));
+        levelNext_btn.setScale(GameSettings.getScaleFactor());
 
         var levelPrev_btn = new cc.MenuItemImage(
             "#left_unpressed.png",
@@ -47,6 +52,7 @@ var MenuLayer = cc.Layer.extend({
             this
         );
         levelPrev_btn.setPosition(cc.p(-tenthOfWidth * 3, tenthOfHeight * 3));
+        levelPrev_btn.setScale(GameSettings.getScaleFactor());
 
         var play_btn = new cc.MenuItemImage(
             "#play_unpressed.png",
@@ -56,6 +62,7 @@ var MenuLayer = cc.Layer.extend({
             this
         );
         play_btn.setPosition(cc.p(0, tenthOfHeight * 2));
+        play_btn.setScale(GameSettings.getScaleFactor());
 
         var musicSwitch_btn = new cc.MenuItemImage(
             "#music.png",
@@ -65,9 +72,11 @@ var MenuLayer = cc.Layer.extend({
             this
         );
         musicSwitch_btn.setPosition(cc.p(-tenthOfWidth, -tenthOfHeight * 3));
+        musicSwitch_btn.setScale(GameSettings.getScaleFactor());
 
         this.musicValue = new cc.Sprite("#on.png");
         this.musicValue.setPosition(cc.p(tenthOfWidth * 6, tenthOfHeight * 2));
+        this.musicValue.setScale(GameSettings.getScaleFactor());
 
         var soundSwitch_btn = new cc.MenuItemImage(
             "#sound.png",
@@ -77,9 +86,11 @@ var MenuLayer = cc.Layer.extend({
             this
         );
         soundSwitch_btn.setPosition(cc.p(-tenthOfWidth, -tenthOfHeight * 4));
+        soundSwitch_btn.setScale(GameSettings.getScaleFactor());
 
         this.soundValue = new cc.Sprite("#on.png");
         this.soundValue.setPosition(cc.p(tenthOfWidth * 6, tenthOfHeight * 1));
+        this.soundValue.setScale(GameSettings.getScaleFactor());
         //create menu
         var menu = new cc.Menu(levelNext_btn, levelPrev_btn,
             play_btn, musicSwitch_btn, soundSwitch_btn);
@@ -100,9 +111,9 @@ var MenuLayer = cc.Layer.extend({
             GameSettings.tenthOfHeight() * 2);
         GameSettings.switchMusic();
         if (GameSettings.isMusicOn()) {
-            this.musicValue = Helper.replaceSprite(this,this.musicValue,"#on.png",pos);
+            this.musicValue = Helper.replaceSprite(this, this.musicValue, "#on.png", pos);
         } else {
-            this.musicValue = Helper.replaceSprite(this,this.musicValue,"#off.png",pos);
+            this.musicValue = Helper.replaceSprite(this, this.musicValue, "#off.png", pos);
         }
         cc.log("music");
     },

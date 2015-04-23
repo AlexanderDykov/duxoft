@@ -43,6 +43,7 @@ var Helper = function() {
             parent.removeChild(sprite);
             sprite = new cc.Sprite(textureName);
             sprite.setPosition(pos);
+            sprite.setScale(GameSettings.getScaleFactor());
             parent.addChild(sprite);
             return sprite;
         }

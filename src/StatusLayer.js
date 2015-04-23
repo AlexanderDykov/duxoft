@@ -22,6 +22,7 @@ var StatusLayer = cc.Layer.extend({
             this
         );
         back_btn.setPosition(cc.p(0,0));
+        back_btn.setScale(GameSettings.getScaleFactor());
         var menu = new cc.Menu(back_btn);
         menu.setPosition(tenthOfWidth, tenthOfHeight * 9);
         //add items to layer

@@ -10,8 +10,7 @@ var Monster = cc.Sprite.extend({
 	ctor: function() {
 		this._super("#monster_eat2.png");
 		//scale relative to aspect ratio
-		var size = cc.director.getWinSize();
-		this.scale = size.height / size.width;
+		this.scale = GameSettings.getScaleFactor();
 		//anchor point
 		this.setAnchorPoint(cc.p(0.5, 0));
 	},
