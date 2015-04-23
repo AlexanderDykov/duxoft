@@ -12,6 +12,7 @@ var Rabbit = cc.Sprite.extend({
 	},
 	onEnter: function() {
 		this._super();
+		this.schedule(this.update, 1, cc.REPEAT_FOREVER, 0, "update");
 	},
 	jump: function() {
 
@@ -25,8 +26,21 @@ var Rabbit = cc.Sprite.extend({
 	/*eatCarrot: function() {
 		this.runAction(Rabbit.eatCarrotAction);
 	},*/
-	activity: function(){
-		this.turnLeft();
+	activity: function() {
+		//this.turnLeft();
+	},
+	update: function() {
+		//set fun action
+		if (Helper.getRandomInt(0, 1) === 0) {
+			this.turnLeft();
+		} else {
+			this.turnRight();
+		}
+	},
+	getCollideRect: function() {
+		var w = this.width * GameSettings.getScaleFactor();
+		var h = this.height * GameSettings.getScaleFactor();
+		return cc.rect(this.x - w / 2, this.y, w, h);
 	}
 });
 

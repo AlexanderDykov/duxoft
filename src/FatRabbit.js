@@ -6,7 +6,7 @@ var FatRabbit = cc.Sprite.extend({
 		this.scale = GameSettings.getScaleFactor();
 		//anchor point
 		this.setAnchorPoint(cc.p(0.5, 0));
-		//eating from creation
+		//set fun action
 		this.eatCarrot();
 	},
 	onEnter: function() {
@@ -19,7 +19,12 @@ var FatRabbit = cc.Sprite.extend({
 		this.runAction(FatRabbit.eatCarrotAction);
 	},
 	activity: function() {
-		this.eatCarrot();
+		// v      this.eatCarrot();
+	},
+	getCollideRect: function() {
+		var w = this.width * GameSettings.getScaleFactor();
+		var h = this.height * GameSettings.getScaleFactor();
+		return cc.rect(this.x - w / 2, this.y, w, h);
 	}
 });
 

@@ -29,10 +29,14 @@ var GameLayer = cc.Layer.extend({
         rabbitSome.setPosition(cc.p(size.width/2,size.height/2));
         bombSome.setPosition(cc.p(size.width/2+tenthOfWidth,size.height/2));
         fatrabbitSome.setPosition(cc.p(size.width/2+2*tenthOfWidth,size.height/2));
-        var someArr = [rabbitSome,bombSome];
+        var someArr = [rabbitSome,bombSome,fatrabbitSome];
 
         var drawer = new cc.DrawNode();
         Level.load(monster, drawer);
+        var rect = monster.getCollideRect();
+        var orig = cc.p(rect.x,rect.y);
+        var dest = cc.p(rect.x+rect.width,rect.y+rect.height);
+        drawer.drawRect(orig,dest,cc.color(255,255,255,0),1,cc.color(255,255,255,255));
 
         var eventListener = cc.EventListener.create({
             event: cc.EventListener.MOUSE,
@@ -103,5 +107,3 @@ var GameLayer = cc.Layer.extend({
 });
 
 GameLayer.gameObjects = [];
-
-GameLayer.some;

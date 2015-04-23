@@ -25,6 +25,11 @@ var Monster = cc.Sprite.extend({
 	},
 	eat: function() {
 		this.runAction(Monster.eatAction);
+	},
+	getCollideRect: function() {
+		var w = this.width * GameSettings.getScaleFactor();
+		var h = this.height * GameSettings.getScaleFactor();
+		return cc.rect(this.x - w / 2, this.y, w, h);
 	}
 });
 

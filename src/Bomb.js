@@ -12,6 +12,8 @@ var Bomb = cc.Sprite.extend({
 	},
 	onEnter: function() {
 		this._super();
+		//set fun action
+		this.fire();
 	},
 	fire: function() {
 		this.runAction(Bomb.fireAction);
@@ -31,6 +33,11 @@ var Bomb = cc.Sprite.extend({
 	},
 	activity: function() {
 		this.boom();
+	},
+	getCollideRect: function() {
+		var w = this.width * GameSettings.getScaleFactor() * 1.4;
+		var h = this.height * GameSettings.getScaleFactor() * 1.4;
+		return cc.rect(this.x - w / 2, this.y, w, h);
 	}
 });
 
