@@ -18,29 +18,11 @@ var Level = function() {
         return character !== ' ' && character !== '\n' && character !== '\r' && character !== '\t' && character !== '\0' && typeof character !== 'undefined';
     };
 
-    var getArray = function(txtData) {
-        var arr = [];
-        var len = txtData.length + 1;
-        var num = '';
-        for (var i = 0; i < len; i++) {
-            if (isNotControlChar(txtData[i])) {
-                num = num.concat(txtData[i]); //add new numbers to <num>
-            } else {
-                if (num !== '') { //check whether <num> has some numbers
-                    arr.push(parseInt(num));
-                    num = '';
-                }
-            }
-        };
-        return arr;
-    };
-
-    var getPath = function(arr) {
+    var getPath = function(data) {
         var path = [];
-        var len = arr.length;
-        for (var i = 0; i < len; i += 2) {
-            path[i] = arr[i] * unitX;
-            path[i + 1] = arr[i + 1] * unitY;
+        var len = data.points.length;
+        for (var i = 0; i < data.points.length; i++) {
+            path.push(cc.p(data.points[i].x * unitX, data.points[i].y * unitY));
         }
         return path;
     };
@@ -55,13 +37,7 @@ var Level = function() {
     };
 
     var drawCurvePath = function(path) {
-        var points = [];
-        var len = path.length;
-        for (var i = 0; i < len; i += 2) {
-            points.push(cc.p(path[i], path[i + 1]));
-        }
-        drawer_.drawCardinalSpline(points, 0.6, 100, 1, new cc.Color(0, 255, 255, 255));
-        cc.log( points);
+        drawer_.drawCardinalSpline(path, 0.6, 100, 5, new cc.Color(255, 255, 255, 255));
     };
 
     var genGameObjects = function(path) {
@@ -73,19 +49,8 @@ var Level = function() {
             var normal = cc.p(-direction.y, direction.x);
             var dist = cc.pDistance(from, to);
 
-            cc.log("noramal: " + normal.x + " " + normal.y);
-            cc.log("dist: " + dist);
-            var monster_length = monster_.width;
-            var count = Math.floor(dist / monster_length);
-            cc.log(count);
-            cc.log(direction.x + " " + direction.y);
-            for (var j = 0; j < count; j++) {
-                var rabb = new Rabbit();
-                rabb.setPosition(from.x + direction.x * j * monster_length, from.y + direction.y * j * monster_length);
-                GameLayer.some.addChild(rabb, 2);
-            };
-        };
-        cc.log("monster len: " + monster_.width * monster_.scale);
+    var genGameObjects = function(data) {
+
     }
 
     var setMonsterMoveAction = function(path) {
@@ -146,18 +111,15 @@ var Level = function() {
             }
             monster_ = monster;
             drawer_ = drawer;
-            var name = "res/" + (currLevel + 1) + ".txt";
-            cc.loader.loadTxt(name, function(err, data) {
-                if (err) {
+            var name = "res/" + (currLevel + 1) + ".json";
+            cc.loader.loadJson(name , function(error, data){
+                if (error) {
                     return cc.log("Level loading '" + name + "' failed");
                 }
-                //process data
-                var arr = getArray(data);
-                var path = getPath(arr);
-                //drawLinearPath(path);
+                var path = getPath(data); 
                 drawCurvePath(path);
                 setMonsterMoveAction(path);
-                //genGameObjects(path);
+                genGameObjects(data);
             });
         },
         nextLevel: function() {
