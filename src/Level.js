@@ -40,18 +40,9 @@ var Level = function() {
         drawer_.drawCardinalSpline(path, 0.6, 100, 5, new cc.Color(255, 255, 255, 255));
     };
 
-    var genGameObjects = function(path) {
-        var len = path.length;
-        for (var i = 0; i < len - NUM_BY_POINT; i += NUM_BY_POINT) {
-            var from = cc.p(path[i], path[i + 1]);
-            var to = cc.p(path[i + 2], path[i + 3]);
-            var direction = cc.pNormalize(cc.pSub(to, from));
-            var normal = cc.p(-direction.y, direction.x);
-            var dist = cc.pDistance(from, to);
-
     var genGameObjects = function(data) {
 
-    }
+    };
 
     var setMonsterMoveAction = function(path) {
         cc.log(path);
@@ -60,9 +51,9 @@ var Level = function() {
         var initPos = null;
         var initAngle = 0;
         var initNormal = null;
-        for (var i = 0; i < len - 2; i += 2) {
-            var from = new cc.Point(path[i], path[i + 1]);
-            var to = new cc.Point(path[i + 2], path[i + 3]);
+        for (var i = 0; i < len - 1; i++ ) {
+            var from = path[i];
+            var to = path[i+1];
             //create move action
             var direction = cc.pSub(to, from);
             var normal = cc.pNormalize(cc.p(-direction.y, direction.x));
