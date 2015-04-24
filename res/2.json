@@ -9,8 +9,12 @@
 	"map" : [	
 		{"type" : "bomb", "offset" : "40", "section" : "1"},
 		{"type" : "rabbit", "offset" : "90", "section" : "1"},
-		{"type" : "fat rabbit", "offset" : "55", "section" : "2"},
-		{"type" : "bomb", "offset" : "40", "section" : "3"},
-		{"type" : "fat rabbit", "offset" : "90", "section" : "3"}
+		{"type" : "fat rabbit", "offset" : "10", "section" : "2"},
+		{"type" : "fat rabbit", "offset" : "30", "section" : "2"},
+		{"type" : "fat rabbit", "offset" : "50", "section" : "2"},
+		{"type" : "fat rabbit", "offset" : "70", "section" : "2"},
+		{"type" : "rabbit", "offset" : "90", "section" : "2"},
+		{"type" : "bomb", "offset" : "15", "section" : "3"},
+		{"type" : "fat rabbit", "offset" : "45", "section" : "3"}
 	]
 }

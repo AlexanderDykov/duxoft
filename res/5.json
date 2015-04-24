@@ -7,10 +7,16 @@
 	],
 
 	"map" : [	
-		{"type" : "rabbit", "offset" : "80", "section" : "1"},
 		{"type" : "bomb", "offset" : "40", "section" : "1"},
+		{"type" : "rabbit", "offset" : "80", "section" : "1"},
 		{"type" : "fat rabbit", "offset" : "10", "section" : "2"},
-		{"type" : "bomb", "offset" : "50", "section" : "2"},
+		{"type" : "bomb", "offset" : "20", "section" : "2"},
+		{"type" : "fat rabbit", "offset" : "30", "section" : "2"},
+		{"type" : "bomb", "offset" : "40", "section" : "2"},
+		{"type" : "fat rabbit", "offset" : "50", "section" : "2"},
+		{"type" : "bomb", "offset" : "60", "section" : "2"},
+		{"type" : "fat rabbit", "offset" : "70", "section" : "2"},
+		{"type" : "bomb", "offset" : "80", "section" : "2"},
 		{"type" : "fat rabbit", "offset" : "90", "section" : "2"}
 	]
 }

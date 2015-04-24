@@ -10,8 +10,8 @@
 	],
 
 	"map" : [	
-		{"type" : "rabbit", "offset" : "90", "section" : "1"},
 		{"type" : "bomb", "offset" : "40", "section" : "1"},
+		{"type" : "rabbit", "offset" : "90", "section" : "1"},
 		{"type" : "fat rabbit", "offset" : "55", "section" : "2"},
 		{"type" : "bomb", "offset" : "70", "section" : "3"},
 		{"type" : "fat rabbit", "offset" : "90", "section" : "3"}
