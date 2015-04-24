@@ -12,3 +12,8 @@ var PlayScene = cc.Scene.extend({
 		this.addChild(new StatusLayer());
 	}
 });
+
+PlayScene.scene = function() {
+    var scene = new PlayScene();
+    return new cc.TransitionFade(0.5, scene);
+};

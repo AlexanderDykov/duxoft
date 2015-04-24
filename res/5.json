@@ -6,13 +6,11 @@
 		{ "x" : "20", "y" : "13" }
 	],
 
-	"map" : {
-		"1" : {
-		 "10" : "1" ,
-		 "50" : "2" 
-		},
-		"2" : {
-			"80":"1"
-		}
-	}
+	"map" : [	
+		{"type" : "rabbit", "offset" : "80", "section" : "1"},
+		{"type" : "bomb", "offset" : "40", "section" : "1"},
+		{"type" : "fat rabbit", "offset" : "10", "section" : "2"},
+		{"type" : "bomb", "offset" : "50", "section" : "2"},
+		{"type" : "fat rabbit", "offset" : "90", "section" : "2"}
+	]
 }

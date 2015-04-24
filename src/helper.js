@@ -46,24 +46,23 @@ var Helper = function() {
             sprite.setScale(GameSettings.getScaleFactor());
             parent.addChild(sprite);
             return sprite;
+        },
+        jumpToDir: function(rabbit, duration, dir, animation) {
+            var height = rabbit.jumpHeight;
+            var moveUp = cc.moveBy(duration / 2, cc.p(dir.x * height, dir.y * height))
+                .easing(cc.easeOut(duration));
+            var moveDown = cc.moveBy(duration / 2, cc.p(-dir.x * height, -dir.y * height))
+                .easing(cc.easeIn(duration * 2));
+            var lock = new cc.CallFunc(function() {
+                rabbit.isJump = true;
+            }, null);
+            var unlock = new cc.CallFunc(function() {
+                rabbit.isJump = false;
+            }, null);
+            var spaw = cc.spawn(cc.sequence(moveUp, moveDown), animation);
+            var seq = cc.sequence(lock,spaw,unlock);
+
+            return spaw;
         }
     };
 }();
-
-var jumpToDir = function(duration, dir, height, rabbit) {
-    var moveUp = cc.moveBy(duration / 2, cc.p(dir.x * height, dir.y * height))
-        .easing(cc.easeOut(duration));
-    var moveDown = cc.moveBy(duration / 2, cc.p(-dir.x * height, -dir.y * height))
-        .easing(cc.easeIn(duration * 2));
-    var init = function() {
-        rabbit.isJumpDone = false;
-    }
-    var finish = function() {
-        rabbit.isJumpDone = true;
-    }
-    var spaw = cc.spawn(cc.sequence(moveUp, moveDown), rabbit.jumpAnimation);
-    var seq = cc.sequence(new cc.CallFunc(init, null), spaw, new cc.CallFunc(finish, null));
-
-
-    return seq;
-}

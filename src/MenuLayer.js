@@ -100,11 +100,15 @@ var MenuLayer = cc.Layer.extend({
         this.addChild(this.musicValue);
         this.addChild(this.soundValue);
         this.addChild(menu);
+        this.schedule(this.update, 1/5, cc.REPEAT_FOREVER, 0, "updateMenuLayer");
         cc.log("menu was added");
+    },
+    update: function() {
+        this.levelNumber_lbl_tmp.setNumber(Level.getCurrentLevel());
     },
     play: function() {
         var scene = new PlayScene();
-        cc.director.pushScene(new cc.TransitionFade(1.2, scene));
+        cc.director.pushScene(new cc.TransitionFade(0.5, scene));
     },
     switchMusic: function() {
         var pos = cc.p(GameSettings.tenthOfWidth() * 6,
@@ -130,12 +134,12 @@ var MenuLayer = cc.Layer.extend({
         cc.log("sound");
     },
     setNextLevel: function() {
-        Level.nextLevel();
+        Level.nextOpenLevel();
         this.levelNumber_lbl_tmp.setNumber(Level.getCurrentLevel());
         cc.log("next level");
     },
     setPrevLevel: function() {
-        Level.prevLevel();
+        Level.prevOpenLevel();
 
         this.levelNumber_lbl_tmp.setNumber(Level.getCurrentLevel());
         cc.log("prev level");

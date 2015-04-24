@@ -6,12 +6,13 @@ var Level = function() {
     //PRIVATE
     var isInit = false;
     var currLevel = -1;
+    var opennedLevels = -1;
     var unitX = 0;
     var unitY = 0;
     var monster_ = null;
     var drawer_ = null;
     var NUM_BY_POINT = 2; //two numbers for one point
-    var MAX_COUNT_LVL = 30;
+    var MAX_COUNT_LVL = 5;
     var UNIT_LENGTH = 20;
 
     var isNotControlChar = function(character) {
@@ -49,8 +50,11 @@ var Level = function() {
 
 
     var genGameObjects = function(data) {
+        //clear prev level data
+        GameLayer.gameObjects = [];
+        GameLayer.currObject = 0;
         for (var i = 0; i < data.map.length; i++) {
-            var object =  data.map[i];
+            var object = data.map[i];
             var unit;
             cc.log(data.map.length);
             switch (object.type) {
@@ -65,11 +69,19 @@ var Level = function() {
                     break
             }
             var firstPoint = data.points[object.section - 1];
-            var sectionPoint = data.points[object.section];
-            cc.log(firstPoint, sectionPoint, object.offset);
-            unit.setPositionFromTwoPoints(firstPoint, sectionPoint, object.offset);
-            PlayScene.gameLayer.addChild(unit,2);
+            var secondPoint = data.points[object.section];
+            cc.log(firstPoint, secondPoint, object.offset);
+            var direction = cc.pSub(secondPoint, firstPoint);
+            var normal = cc.pNormalize(cc.p(-direction.y, direction.x));
+            unit.setActivity(normal);
+            unit.setPositionFromTwoPoints(firstPoint, secondPoint, object.offset);
+            PlayScene.gameLayer.addChild(unit, 2);
+            GameLayer.gameObjects.push(unit);
         }
+        //var rect = monster_.getCollideRect();
+        //var orig = cc.p(rect.x, rect.y);
+        //var dest = cc.p(rect.x + rect.width, rect.y + rect.height);
+        //drawer_.drawRect(orig, dest, cc.color(255, 255, 255, 0), 1, cc.color(255, 255, 255, 255));
     };
 
     var setMonsterMoveAction = function(path) {
@@ -79,9 +91,9 @@ var Level = function() {
         var initPos = null;
         var initAngle = 0;
         var initNormal = null;
-        for (var i = 0; i < len - 1; i++ ) {
+        for (var i = 0; i < len - 1; i++) {
             var from = path[i];
-            var to = path[i+1];
+            var to = path[i + 1];
             //create move action
             var direction = cc.pSub(to, from);
             var normal = cc.pNormalize(cc.p(-direction.y, direction.x));
@@ -105,6 +117,8 @@ var Level = function() {
             }
         };
         //set action
+        monster_.setPosition(initPos);
+        monster_.setRotation(initAngle);
         var initMonster = new cc.CallFunc(
             function() {
                 monster_.setPosition(initPos);
@@ -112,8 +126,24 @@ var Level = function() {
             },
             null
         );
+        var finishLevel = new cc.CallFunc(
+            function() {
+                openLevel();
+                Level.nextLevel();
+                monster_.setPosition(0, 0);
+                cc.director.runScene(PlayScene.scene());
+            },
+            null
+        );
         moveMonster.unshift(initMonster);
+        moveMonster.push(finishLevel);
         monster_.setMoveAction(cc.sequence(moveMonster));
+    };
+
+    var openLevel = function() {
+        if ((currLevel + 1) === opennedLevels && opennedLevels < MAX_COUNT_LVL) {
+            opennedLevels++;
+        }
     };
     //INTERFACE
     return {
@@ -121,6 +151,7 @@ var Level = function() {
             unitX = winSize.width / UNIT_LENGTH;
             unitY = winSize.height / UNIT_LENGTH;
             currLevel = 0;
+            opennedLevels = 1;
             //set as initialized
             isInit = true;
         },
@@ -131,16 +162,22 @@ var Level = function() {
             monster_ = monster;
             drawer_ = drawer;
             var name = "res/" + (currLevel + 1) + ".json";
-            cc.loader.loadJson(name , function(error, data){
+            cc.loader.loadJson(name, function(error, data) {
                 if (error) {
                     return cc.log("Level loading '" + name + "' failed");
                 }
                 pointUpdate(data);
-                var path = getPath(data); 
+                var path = getPath(data);
                 drawCurvePath(path);
                 setMonsterMoveAction(path);
                 genGameObjects(data);
             });
+        },
+        nextOpenLevel: function() {
+            currLevel = (currLevel + 1) % opennedLevels;
+        },
+        prevOpenLevel: function() {
+            currLevel = (currLevel - 1 + opennedLevels) % opennedLevels;
         },
         nextLevel: function() {
             currLevel = (currLevel + 1) % MAX_COUNT_LVL;

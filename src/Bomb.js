@@ -3,6 +3,8 @@
  */
 
 var Bomb = cc.Sprite.extend({
+	activity: null,
+	name: "bomb",
 	ctor: function() {
 		this._super("#bomb0.png");
 		//scale relative to aspect ratio
@@ -16,36 +18,43 @@ var Bomb = cc.Sprite.extend({
 		this.fire();
 	},
 	fire: function() {
-		this.runAction(Bomb.fireAction);
+		this.runAction(Bomb.fireAction.clone());
 	},
 	boom: function() {
 		this.stopAllActions();
 		this.runAction(
 			cc.sequence(
-				Bomb.boomAction,
 				new cc.CallFunc(
 					function() {
-						PlayScene.gameLayer.removeGameObject(this)
-					}, this
-				)
+						PlayScene.gameLayer.pause();
+						cc.director.runScene(PlayScene.scene());
+					}, null
+				),
+				Bomb.boomAction
 			)
 		);
 	},
-
 	setPositionFromTwoPoints: function(firstPoint, secondPoint, offset) {
-		var liam = ( offset / 100 )
-		var x = (firstPoint.x + liam * secondPoint.x) / ( 1 + liam );
-		var y = (firstPoint.y + liam * secondPoint.y) / ( 1 + liam );
+		var liam = (offset / 100);
+		var x = firstPoint.x + (secondPoint.x - firstPoint.x) * liam;
+		var y = firstPoint.y + (secondPoint.y - firstPoint.y) * liam;
 		this.setPosition(x, y);
 	},
-
+	setActivity: function(dir) {
+		var angle = Helper.getAngle(cc.p(0, 1), dir);
+		if (dir.x < 0.0) {
+			angle = -angle;
+		}
+		this.setRotation(angle);
+	},
 	activity: function() {
 		this.boom();
+
 	},
 	getCollideRect: function() {
 		var w = this.width * GameSettings.getScaleFactor() * 1.4;
 		var h = this.height * GameSettings.getScaleFactor() * 1.4;
-		return cc.rect(this.x - w / 2, this.y, w, h);
+		return cc.rect(this.x - w / 4, this.y + w / 4, w / 1.5, h / 1.5);
 	}
 });
 

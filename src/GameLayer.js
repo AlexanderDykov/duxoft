@@ -1,5 +1,6 @@
 var GameLayer = cc.Layer.extend({
     spriteSheet: null,
+    monster: null,
     ctor: function() {
         this._super();
         this.init();
@@ -12,98 +13,72 @@ var GameLayer = cc.Layer.extend({
         this.spriteSheet = new cc.SpriteBatchNode(res.GameSprites_png);
         this.addChild(this.spriteSheet);
 
-        var size = cc.director.getWinSize();
+        /*var size = cc.director.getWinSize();
         var tenthOfWidth = GameSettings.tenthOfWidth();
-        var tenthOfHeight = GameSettings.tenthOfHeight();
+        var tenthOfHeight = GameSettings.tenthOfHeight();*/
         //game interface
-            //init actions
+        //init actions
         Monster.initActions();
         Rabbit.initActions();
         Bomb.initActions();
         FatRabbit.initActions();
-            //create objects
-        var monster = new Monster();
-        var rabbitSome = new Rabbit();
-        var fatrabbitSome = new FatRabbit();
-        var bombSome = new Bomb();
-        rabbitSome.setPosition(cc.p(size.width/2,size.height/2));
-        bombSome.setPosition(cc.p(size.width/2+tenthOfWidth,size.height/2));
-        fatrabbitSome.setPosition(cc.p(size.width/2+2*tenthOfWidth,size.height/2));
-        var someArr = [rabbitSome,bombSome,fatrabbitSome];
-
+        //create objects
+        this.monster = new Monster();
+        //load level
         var drawer = new cc.DrawNode();
-        Level.load(monster, drawer);
-        var rect = monster.getCollideRect();
-        var orig = cc.p(rect.x,rect.y);
-        var dest = cc.p(rect.x+rect.width,rect.y+rect.height);
-        drawer.drawRect(orig,dest,cc.color(255,255,255,0),1,cc.color(255,255,255,255));
+        Level.load(this.monster, drawer);
 
+
+
+        var first = true;
+        var that = this;
         var eventListener = cc.EventListener.create({
             event: cc.EventListener.MOUSE,
             onMouseDown: function(event) {
                 if (event.getButton() === cc.EventMouse.BUTTON_LEFT) {
-                    monster.move();
-                }
-                if (event.getButton() === cc.EventMouse.BUTTON_RIGHT) {
-                    monster.eat();
-                    //rabbitSome.runAction(cc.sequence(Rabbit.turnleftAction,
-                    //    Rabbit.turnleftAction,Rabbit.turnrightAction,Rabbit.turnrightAction));
-                    //bombSome.boom();
-                    for (var i = someArr.length - 1; i >= 0; i--) {
-                        someArr[i].activity();
-                    };
+                    cc.log("go length:" + GameLayer.gameObjects.length);
+                    cc.log("curr object: " + GameLayer.currObject);
+                    if (GameLayer.currObject < GameLayer.gameObjects.length) {
+                        GameLayer.gameObjects[GameLayer.currObject++].activity();
+                    }
                 }
             }
         });
-
-        //TODO: TEMP
-        //hi.runAction(cc.moveTo(1,myLevel(size)[0]));
-        /*var eventListener = cc.EventListener.create({
-         event: cc.EventListener.MOUSE,
-         onMouseDown: function(event)
-         {
-         cc.log(currRab.isJumpDone);
-         if( currRab.isJumpDone === true ) {
-         var jumpAction = jumpToDir(0.7, currRab.direction, 50, currRab);
-         currRab.runAction(jumpAction);
-         hi.runAction(hi.eatAnimation);
-         }
-         if( currRab === rab0 ){
-         currRab = rab1;
-         } else {
-         if( currRab === rab1 ){
-         currRab = rab2;
-         } else if( currRab === rab2 ){
-         currRab = rab3;
-         } else{
-         currRab = rab0;
-         }
-         }
-         }
-
-         });*/
-        //cc.eventManager.addListener(eventListener, this);
-        //draw.drawQuadBezier(cc.p(160,10), cc.p(310,0), cc.p(310,160),50,3);
-        //draw.drawQuadBezier(cc.p(310,160), cc.p(310,310), cc.p(160,310),50,3);
-        //draw.drawQuadBezier(cc.p(160,310), cc.p(10,310), cc.p(10,160),50,3);
-        //draw.drawQuadBezier(cc.p(10,160), cc.p(10,10), cc.p(160,10),50,3);
-
         //add listeners
         cc.eventManager.addListener(eventListener, this);
         //add items to layer
-        this.addChild(monster, 2);
+        this.addChild(this.monster, 2);
         this.addChild(drawer, 2);
-        this.addChild(rabbitSome,2);
-        this.addChild(bombSome,2);
-        this.addChild(fatrabbitSome,2);
-        this.scheduleUpdate();
+        this.schedule(this.update, 1 / 10, cc.REPEAT_FOREVER, 0, "updateGameLayer");
+        this.schedule(this.start, 1, 0, 1, "startGameLayer");
     },
     update: function(dt) {
         //check collision
+        var monsterRect = this.monster.getCollideRect();
+        var i = 0;
+        while (i < GameLayer.gameObjects.length) {
+            var gameObjectRect = GameLayer.gameObjects[i].getCollideRect();
+            if (cc.rectIntersectsRect(monsterRect, gameObjectRect)) {
+                this.monster.eat(GameLayer.gameObjects[i].name);
+                this.removeChild(GameLayer.gameObjects[i]);
+                cc.log("before| i: " + i + " len: " + GameLayer.gameObjects.length);
+                GameLayer.gameObjects.splice(i, 1);
+                cc.log("after| i: " + i + " len: " + GameLayer.gameObjects.length);
+                //update index
+                if (GameLayer.currObject > i) {
+                    GameLayer.currObject--;
+                }
+            }
+            i++;
+        }
     },
-    removeGameObject: function( object ) {
+    start: function(dt){
+        this.monster.move();
+    },
+    removeGameObject: function(object) {
         this.removeChild(object);
     }
 });
 
 GameLayer.gameObjects = [];
+GameLayer.currObject = 0;

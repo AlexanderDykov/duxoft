@@ -5,7 +5,7 @@
 var Monster = cc.Sprite.extend({
 	moveAction: null,
 	//eatAction: null,
-	speed: 5,
+	speed: 3,
 	rotate_speed: 3.0,
 	ctor: function() {
 		this._super("#monster_eat2.png");
@@ -23,13 +23,27 @@ var Monster = cc.Sprite.extend({
 	move: function() {
 		this.runAction(this.moveAction);
 	},
-	eat: function() {
-		this.runAction(Monster.eatAction);
+	eat: function(objectName) {
+		if (objectName === "bomb") {
+			this.runAction(Monster.eatAction);
+		} else {
+			this.runAction(
+				cc.sequence(
+					new cc.CallFunc(
+						function() {
+							PlayScene.gameLayer.pause();
+							cc.director.runScene(PlayScene.scene());
+						}, null
+					),
+					Monster.eatAction
+				)
+			);
+		}
 	},
 	getCollideRect: function() {
 		var w = this.width * GameSettings.getScaleFactor();
 		var h = this.height * GameSettings.getScaleFactor();
-		return cc.rect(this.x - w / 2, this.y, w, h);
+		return cc.rect(this.x + w / 4, this.y, w / 100, h / 2);
 	}
 });
 
